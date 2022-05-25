@@ -1,31 +1,36 @@
 import React from 'react';
+import ErrorBox from './Error';
 import * as yup from 'yup';
 
 const FormComponent = props => {
+    const {values, update, submit, errors, disabled} = props;
+    const allErrors = [errors.email, errors.tos];
+    console.log(disabled);
     
     return (
         <div>
-            <form>
+            <form onSubmit={submit}>
                 <label> First Name 
-                    <input type='text'/>
+                    <input name='first_name' type='text' value={values.first_name} onChange={update}/>
                 </label>
                 <label> Last Name 
-                    <input type='text'/>
+                    <input name='last_name' type='text' value={values.last_name} onChange={update}/>
                 </label>
                 <br/>
                 <label> Email
-                    <input type='email'/>
+                    <input name='email' type='email' value={values.email} onChange={update}/>
                 </label>
                 <label> Password
-                    <input type='password'/>
+                    <input name='pass' type='password' value={values.pass} onChange={update}/>
                 </label>
                 <br/>
-                <label> I accept the terms of Service
-                    <input type='checkbox'/>
+                <label> I accept the Terms of Service
+                    <input name='tos' type='checkbox' checked={values.tosCheck} onChange={update}/>
                 </label>
                 <br/>
-                <button onClick={e=>e.preventDefault()}>Submit</button>
+                <button disabled={disabled}>Submit</button>
             </form>
+            {allErrors.map(error => {return <ErrorBox error={error}/>})}
         </div>
     )
 }
