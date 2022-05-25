@@ -3,9 +3,8 @@ import ErrorBox from './Error';
 import * as yup from 'yup';
 
 const FormComponent = props => {
-    const {values, update, submit, errors, disabled} = props;
+    const {values, update, submit, errors} = props;
     const allErrors = [errors.email, errors.tos];
-    console.log(disabled);
     
     return (
         <div>
@@ -28,7 +27,7 @@ const FormComponent = props => {
                     <input name='tos' type='checkbox' checked={values.tosCheck} onChange={update}/>
                 </label>
                 <br/>
-                <button disabled={disabled}>Submit</button>
+                <button disabled={false}>Submit</button>
             </form>
             {allErrors.map(error => {return <ErrorBox error={error}/>})}
         </div>

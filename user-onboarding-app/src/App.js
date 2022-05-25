@@ -3,6 +3,7 @@ import axios from 'axios';
 import * as yup from 'yup';
 import schema from './validation/schema';
 import Form from './components/Form';
+import UserCard from './components/UserCard';
 import logo from './logo.svg';
 import './App.css';
 
@@ -11,7 +12,7 @@ const initialValues = {
   last_name: '',
   email: '',
   pass: '',
-  tosCheck: false,
+  tos: false,
 }
 const initialErrors = {
   email: '',
@@ -23,11 +24,11 @@ function App() {
   const [users, setUsers] = useState([]);
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState(initialErrors);
-  const [isDisabled, setIsDisabled] = useState(initialDisabled);
 
-  useEffect(() => {
-    schema.isValid(values).then(valid => setIsDisabled(!valid))
-  }, [values])
+  useEffect(()=>{
+    axios.get(`https://reqres.in/api/users`)
+      .then(res => {setUsers(res.data.data)})
+  }, [])
   
   const validate = (name, value) =>{
     yup.reach(schema, name).validate(value)
@@ -38,8 +39,9 @@ function App() {
   const formUpdater = evt =>{
     const {name, value, checked, type} = evt.target;
     const valueToUse = type === 'checkbox' ? checked : value;
+    setValues({...values, [name]: valueToUse});
+    console.log(values);
     validate(name, valueToUse);
-    setValues(name, valueToUse);
   }
 
   const formSubmitter = evt =>{
@@ -50,14 +52,17 @@ function App() {
       email: values.email,
       pass: values.pass
     }
+    console.log(newFriend);
     axios.post(`https://reqres.in/api/users`, newFriend)
-      .then(res =>console.log(res))
-      .catch(err =>console.log(err))
+      .then(res =>setUsers([...users, res.data]))
+      .catch(err =>console.log(`the error was: ${err}`))
+      .finally(() => console.log(users))
   }
 
   return (
     <div className="App">
-      <Form values={values} update={formUpdater} submit={formSubmitter} errors={errors} disabled={isDisabled}/>
+      <Form values={values} update={formUpdater} submit={formSubmitter} errors={errors}/>
+      {users.map(user => {return <UserCard email={user.email} first_name={user.first_name} last_name={user.last_name}/>})}
     </div>
   );
 }
