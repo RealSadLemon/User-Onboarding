@@ -27,7 +27,7 @@ const FormComponent = props => {
                     <input name='tos' type='checkbox' checked={values.tosCheck} onChange={update}/>
                 </label>
                 <br/>
-                <button disabled={false}>Submit</button>
+                <button id="submit" disabled={false}>Submit</button>
             </form>
             {allErrors.map(error => {return <ErrorBox error={error}/>})}
         </div>
